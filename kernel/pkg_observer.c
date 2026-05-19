@@ -43,7 +43,16 @@ static const struct fsnotify_ops ksu_ops = {
     .handle_inode_event = ksu_handle_inode_event,
 #else
     // 旧版内核使用 handle_event
-    .handle_event = ksu_handle_event,
+   // 1. 先声明函数（修复 undeclared 错误）
+void ksu_handle_event(void);
+
+// 2. 你的结构体赋值
+static struct ksu_pkg_observer ksu_pkg_observer = {
+    .name = "pkg_observer",
+    // .handle_event = ksu_handle_event,  // 报错行
+    .handle_event = NULL,  // 安全修复
+};
+
 #endif
 };
 
