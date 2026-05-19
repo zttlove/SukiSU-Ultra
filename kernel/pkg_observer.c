@@ -38,7 +38,13 @@ static int ksu_handle_inode_event(struct fsnotify_mark *mark, u32 mask,
 }
 
 static const struct fsnotify_ops ksu_ops = {
+  #if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 14, 0)
+    // 新版内核（5.14及以上）使用 handle_inode_event
     .handle_inode_event = ksu_handle_inode_event,
+#else
+    // 旧版内核使用 handle_event
+    .handle_event = ksu_handle_event,
+#endif
 };
 
 static int add_mark_on_inode(struct inode *inode, u32 mask,
