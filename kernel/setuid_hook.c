@@ -11,6 +11,7 @@
 #include <linux/types.h>
 #include <linux/uaccess.h>
 #include <linux/uidgid.h>
+#include "seccomp.h"
 
 #include "allowlist.h"
 #include "setuid_hook.h"
