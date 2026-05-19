@@ -16,8 +16,9 @@
 static struct policydb *get_policydb(void)
 {
     struct policydb *db;
-    struct selinux_policy *policy = selinux_policy_ptr();
-    db = &policy->policydb;
+       // 通过 selinux_state 的内存布局，直接强行获取 policydb 指针
+    unsigned long selinux_state_addr = (unsigned long)&selinux_state;
+    db = (struct policydb *)(*(unsigned long *)(selinux_state_addr + sizeof(void *) * 2));
     return db;
 }
 
