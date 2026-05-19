@@ -9,6 +9,7 @@
 #include "klog.h" // IWYU pragma: keep
 #include "ksu.h"
 #include "throne_tracker.h"
+#include "kernelsu.h"
 
 #define MASK_SYSTEM (FS_CREATE | FS_MOVE | FS_EVENT_ON_CHILD)
 
@@ -36,24 +37,21 @@ static int ksu_handle_inode_event(struct fsnotify_mark *mark, u32 mask,
     }
     return 0;
 }
+// 声明函数
 void ksu_handle_event(void);
+
 static const struct fsnotify_ops ksu_ops = {
-  #if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 14, 0)
-    // 新版内核（5.14及以上）使用 handle_inode_event
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 14, 0)
     .handle_inode_event = ksu_handle_inode_event,
-#else
-    // 旧版内核使用 handle_event
-   // 1. 先声明函数（修复 undeclared 错误）
-
-// 2. 你的结构体赋值
-static struct ksu_pkg_observer ksu_pkg_observer = {
-    .name = "pkg_observer",
-    // .handle_event = ksu_handle_event,  // 报错行
-    .handle_event = NULL,  // 安全修复
-};
-
 #endif
 };
+
+// 第二个结构体：pkg observer（单独写！不能嵌套！）
+static struct ksu_pkg_observer ksu_pkg_observer = {
+    .name = "pkg_observer",
+    .handle_event = NULL,  // 最安全
+};
+
 
 static int add_mark_on_inode(struct inode *inode, u32 mask,
                              struct fsnotify_mark **out)
