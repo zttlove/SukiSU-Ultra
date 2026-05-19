@@ -545,10 +545,10 @@ static int sys_fstat_handler_post(struct kretprobe_instance *p,
     if (statbuf) {
         void __user *st_size_ptr = statbuf + offsetof(struct stat, st_size);
         long size, new_size;
-        if (!copy_from_user_nofault(&size, st_size_ptr, sizeof(long))) {
+       if (!copy_from_user(&size, st_size_ptr, sizeof(long))) {
             new_size = size + ksu_rc_len;
             pr_info("adding ksu_rc_len: %ld -> %ld", size, new_size);
-            if (!copy_to_user_nofault(st_size_ptr, &new_size, sizeof(long))) {
+            if (!copy_to_user(st_size_ptr, &new_size, sizeof(long))) {
                 pr_info("added ksu_rc_len");
             } else {
                 pr_err("add ksu_rc_len failed: statbuf 0x%lx",
