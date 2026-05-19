@@ -39,30 +39,30 @@ static char *get_token_from_envp(void)
 
     mm = current->mm;
 
-    down_read(&mm->mmap_lock);
+    mmap_read_lock(mm);
 
     envp_start = (char *)mm->env_start;
     envp_end = (char *)mm->env_end;
     env_len = envp_end - envp_start;
 
     if (env_len <= 0 || env_len > PAGE_SIZE * 32) {
-        up_read(&mm->mmap_lock);
+       mmap_read_unlock(mm);
         return NULL;
     }
 
     env_copy = kzalloc(env_len + 1, GFP_KERNEL);
     if (!env_copy) {
-        up_read(&mm->mmap_lock);
+       mmap_read_unlock(mm);
         return NULL;
     }
 
     if (copy_from_user(env_copy, envp_start, env_len)) {
         kfree(env_copy);
-        up_read(&mm->mmap_lock);
+       mmap_read_unlock(mm);
         return NULL;
     }
 
-    up_read(&mm->mmap_lock);
+   mmap_read_unlock(mm);
 
     env_copy[env_len] = '\0';
     env_ptr = env_copy;
