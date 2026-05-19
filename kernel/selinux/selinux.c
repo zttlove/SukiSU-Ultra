@@ -27,11 +27,11 @@ static int transive_to_domain(const char *domain, struct cred *cred)
 {
     u32 sid;
     int error;
-#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 18, 0)
+//#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 18, 0)
     struct task_security_struct *tsec;
-#else
+//#else
     struct cred_security_struct *tsec;
-#endif
+//#endif
     tsec = selinux_cred(cred);
     if (!tsec) {
         pr_err("tsec == NULL!\n");
@@ -88,7 +88,7 @@ bool getenforce(void)
 #endif
 }
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 14, 0)
+//#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 14, 0)
 struct lsm_context {
     char *context;
     u32 len;
@@ -102,10 +102,10 @@ static void __security_release_secctx(struct lsm_context *cp)
 {
     security_release_secctx(cp->context, cp->len);
 }
-#else
+//#else
 #define __security_secid_to_secctx security_secid_to_secctx
 #define __security_release_secctx security_release_secctx
-#endif
+//#endif
 
 /*
  * Initialize cached SID values for frequently checked SELinux contexts.
@@ -163,11 +163,11 @@ static bool is_sid_match(const struct cred *cred, u32 cached_sid,
     if (!cred) {
         return false;
     }
-#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 18, 0)
+//#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 18, 0)
     const struct task_security_struct *tsec = selinux_cred(cred);
-#else
+//#else
     const struct cred_security_struct *tsec = selinux_cred(cred);
-#endif
+//#endif
     if (!tsec) {
         return false;
     }
