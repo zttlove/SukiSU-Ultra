@@ -36,7 +36,7 @@ static int ksu_handle_inode_event(struct fsnotify_mark *mark, u32 mask,
     }
     return 0;
 }
-
+void ksu_handle_event(void);
 static const struct fsnotify_ops ksu_ops = {
   #if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 14, 0)
     // 新版内核（5.14及以上）使用 handle_inode_event
@@ -44,7 +44,6 @@ static const struct fsnotify_ops ksu_ops = {
 #else
     // 旧版内核使用 handle_event
    // 1. 先声明函数（修复 undeclared 错误）
-void ksu_handle_event(void);
 
 // 2. 你的结构体赋值
 static struct ksu_pkg_observer ksu_pkg_observer = {
