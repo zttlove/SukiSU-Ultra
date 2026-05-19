@@ -7,8 +7,7 @@
 #include <linux/rculist.h>
 #include <linux/version.h>
 #include "klog.h" // IWYU pragma: keep
-#include "ksu.h"
-#include "throne_tracker.h"
+#include "manager/throne_tracker.h"
 
 #define MASK_SYSTEM (FS_CREATE | FS_MOVE | FS_EVENT_ON_CHILD)
 
@@ -22,8 +21,7 @@ struct watch_dir {
 
 static struct fsnotify_group *g;
 
-static int ksu_handle_inode_event(struct fsnotify_mark *mark, u32 mask,
-                                  struct inode *inode, struct inode *dir,
+static int ksu_handle_inode_event(struct fsnotify_mark *mark, u32 mask, struct inode *inode, struct inode *dir,
                                   const struct qstr *file_name, u32 cookie)
 {
     if (!file_name)
@@ -36,24 +34,12 @@ static int ksu_handle_inode_event(struct fsnotify_mark *mark, u32 mask,
     }
     return 0;
 }
-// 声明函数
-void ksu_handle_event(void);
 
 static const struct fsnotify_ops ksu_ops = {
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 14, 0)
     .handle_inode_event = ksu_handle_inode_event,
-#endif
 };
 
-// 第二个结构体：pkg observer（单独写！不能嵌套！）
-static struct ksu_pkg_observer ksu_pkg_observer = {
-    .name = "pkg_observer",
-    .handle_event = NULL,  // 最安全
-};
-
-
-static int add_mark_on_inode(struct inode *inode, u32 mask,
-                             struct fsnotify_mark **out)
+static int add_mark_on_inode(struct inode *inode, u32 mask, struct fsnotify_mark **out)
 {
     struct fsnotify_mark *m;
 
@@ -111,8 +97,7 @@ static void unwatch_one_dir(struct watch_dir *wd)
     }
 }
 
-static struct watch_dir g_watch = { .path = "/data/system",
-                                    .mask = MASK_SYSTEM };
+static struct watch_dir g_watch = { .path = "/data/system", .mask = MASK_SYSTEM };
 
 int ksu_observer_init(void)
 {
@@ -131,7 +116,7 @@ int ksu_observer_init(void)
     return 0;
 }
 
-void ksu_observer_exit(void)
+void __exit ksu_observer_exit(void)
 {
     unwatch_one_dir(&g_watch);
     fsnotify_put_group(g);
