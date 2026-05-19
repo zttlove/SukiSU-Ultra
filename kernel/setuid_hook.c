@@ -21,6 +21,7 @@
 #include "supercalls.h"
 #include "syscall_hook_manager.h"
 #include "kernel_umount.h"
+void ksu_seccomp_allow_cache(struct seccomp_filter *filter, int syscall);
 
 static void ksu_install_manager_fd_tw_func(struct callback_head *cb)
 {
