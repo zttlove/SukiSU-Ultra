@@ -7,7 +7,7 @@
 #include <linux/rculist.h>
 #include <linux/version.h>
 #include "klog.h" // IWYU pragma: keep
-#include "throne_tracker.h"
+//#include "throne_tracker.h"
 
 #define MASK_SYSTEM (FS_CREATE | FS_MOVE | FS_EVENT_ON_CHILD)
 
@@ -21,8 +21,8 @@ struct watch_dir {
 
 static struct fsnotify_group *g;
 
-static int ksu_handle_inode_event(struct fsnotify_mark *mark, u32 mask, struct inode *inode, struct inode *dir,
-                                  const struct qstr *file_name, u32 cookie)
+//static int ksu_handle_inode_event(struct fsnotify_mark *mark, u32 mask, struct inode *inode, struct inode *dir,
+  //                                const struct qstr *file_name, u32 cookie)
 {
     if (!file_name)
         return 0;
@@ -35,8 +35,8 @@ static int ksu_handle_inode_event(struct fsnotify_mark *mark, u32 mask, struct i
     return 0;
 }
 
-static const struct fsnotify_ops ksu_ops = {
-    .handle_inode_event = ksu_handle_inode_event,
+static const struct fsnotify_ops ksu_fsnotify_ops = {
+    .handle_event = NULL,  // 旧内核只有这个字段，直接填空
 };
 
 static int add_mark_on_inode(struct inode *inode, u32 mask, struct fsnotify_mark **out)
