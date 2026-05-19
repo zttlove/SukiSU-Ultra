@@ -1,3 +1,5 @@
+#include <linux/sched/task.h>
+#include <linux/task_work.h>
 #include <linux/mutex.h>
 #include <linux/task_work.h>
 #include <linux/capability.h>
@@ -21,6 +23,9 @@
 #include "manager.h"
 #include "syscall_hook_manager.h"
 
+#ifndef TWA_RESUME
+#define TWA_RESUME 1
+#endif
 #define FILE_MAGIC 0x7f4b5355 // ' KSU', u32
 #define FILE_FORMAT_VERSION 3 // u32
 
