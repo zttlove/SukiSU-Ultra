@@ -63,6 +63,15 @@ int ksu_handle_setresuid(uid_t ruid, uid_t euid, uid_t suid)
     return 0;
 
 do_umount:
+    susfs_do_umount();
+    return 0;
+}
+
+/* 符号导出，解决 undefined symbol */
+EXPORT_SYMBOL_GPL(ksu_handle_setresuid);
+
+
+do_umount:
     {
         // Handle kernel umount
         ksu_handle_umount(current_uid().val, ruid);
