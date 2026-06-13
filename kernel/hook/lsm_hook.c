@@ -134,12 +134,3 @@ void __init ksu_lsm_hook_init(void)
 #endif
     pr_info("LSM hooks initialized.\n");
 }
-
-void ksu_lsm_hook_exit(void)
-{
-}
-// 5.4 内核 空实现 修复链接错误 安全 不影响开机
-void ksu_init_rc_hook(void)
-{
-    return;
-}
