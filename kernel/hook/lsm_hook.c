@@ -134,8 +134,8 @@ void __init ksu_lsm_hook_init(void)
 #endif
     pr_info("LSM hooks initialized.\n");
 }
-void ksu_init_rc_hook(void)
-{
+//void ksu_init_rc_hook(void)
+//{
     // 空实现，新版不需要这个
-}
-EXPORT_SYMBOL_GPL(ksu_init_rc_hook);
+//}
+//EXPORT_SYMBOL_GPL(ksu_init_rc_hook);
