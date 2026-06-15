@@ -8,6 +8,8 @@
 // 公共函数声明
 void __init ksu_lsm_hook_init(void);
 
+void disable_seccomp(void);
+
 // KSU 内部工具函数
 bool is_uid_manager(uid_t uid);
 bool ksu_is_allow_uid_for_current(uid_t uid);
