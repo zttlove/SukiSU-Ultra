@@ -1,3 +1,17 @@
+// 内核基础通用头文件
+#include <linux/types.h>
+#include <linux/list.h>
+#include <linux/printk.h>
+#include <linux/string.h>
+#include <linux/kernel.h>
+
+// KSU 全局宏定义头文件（存放 KSU_INVALID_APPID / KSU_MAX_PACKAGE_NAME）
+#include "../include/ksu_defs.h"
+
+// 内部函数声明头文件
+#include "apk_sign.h"
+#include "manager_identity.h"
+
 uid_t ksu_manager_appid = KSU_INVALID_APPID;
 
 #define SYSTEM_PACKAGES_LIST_PATH "/data/system/packages.list"
