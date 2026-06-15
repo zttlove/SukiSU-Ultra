@@ -4,6 +4,7 @@
 #include <linux/types.h>
 #include <linux/cred.h>
 #include <linux/uidgid.h>
+#include <stdbool.h>
 
 // 底层函数前置声明（对应宏 ksu_is_allow_uid_for_current）
 bool __ksu_is_allow_uid_for_current(uid_t uid);
@@ -14,8 +15,10 @@ void __init ksu_lsm_hook_init(void);
 // 单独声明，无冲突
 void disable_seccomp(void);
 
-// 工具函数：修正返回值为 int，和源码定义一致
-int is_uid_manager(uid_t uid);
+// 已修正：与 manager_identity.h 里 bool 类型对齐
+bool is_uid_manager(uid_t uid);
+
+// 工具函数：返回值保持 int
 int ksu_install_fd(void);
 int ksu_handle_umount(uid_t old_uid, uid_t new_uid);
 
