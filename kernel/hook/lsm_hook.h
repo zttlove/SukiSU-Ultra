@@ -5,6 +5,9 @@
 #include <linux/cred.h>
 #include <linux/uidgid.h>
 
+// 底层函数前置声明（对应宏 ksu_is_allow_uid_for_current）
+bool __ksu_is_allow_uid_for_current(uid_t uid);
+
 // 公共入口
 void __init ksu_lsm_hook_init(void);
 
@@ -16,8 +19,7 @@ int is_uid_manager(uid_t uid);
 int ksu_install_fd(void);
 int ksu_handle_umount(uid_t old_uid, uid_t new_uid);
 
-// 下面这些本身是宏/已有头文件定义，不再重复声明，避免宏冲突
-// ksu_is_allow_uid_for_current 是宏，不在这里写函数声明
+// 非宏函数声明
 bool ksu_is_manager_appid_valid(void);
 bool is_appuid(uid_t uid);
 bool ksu_uid_should_umount(uid_t uid);
