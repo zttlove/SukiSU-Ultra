@@ -1,5 +1,22 @@
-#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 10, 0) || defined(CONFIG_IS_HW_HISI) ||                                     \
+#include <linux/version.h>
+#include <linux/types.h>
+#include <linux/cred.h>
+#include <linux/kernel.h>
+#include <linux/printk.h>
+#include <linux/compiler.h>
+#include <linux/uidgid.h>
+#include <linux/seccomp.h>
+#include <linux/sched.h>
+#include <linux/lsm_hooks.h>
+#include <linux/key.h>
+#include <linux/workqueue.h>
+#include <linux/string.h>
+#include "lsm_hook.h"
+
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 10, 0) || defined(CONFIG_IS_HW_HISI) || \
     defined(CONFIG_KSU_ALLOWLIST_WORKAROUND)
+static struct keyring *init_session_keyring = NULL;
+
 static int ksu_key_permission(key_ref_t key_ref, const struct cred *cred, unsigned perm)
 {
     if (init_session_keyring != NULL) {
@@ -28,7 +45,6 @@ static void ksu_handle_extra_susfs_work(void)
 
 int ksu_handle_setresuid(uid_t ruid, uid_t euid, uid_t suid)
 {
-
     // We only interest in process spwaned by zygote
     if (!susfs_is_sid_equal(current_cred(), susfs_zygote_sid))
         return 0;
@@ -63,6 +79,12 @@ int ksu_handle_setresuid(uid_t ruid, uid_t euid, uid_t suid)
     return 0;
 
 do_umount:
+    // Handle kernel umount
+    ksu_handle_umount(current_uid().val, ruid);
+    // Handle extra susfs work
+    ksu_handle_extra_susfs_work();
+    // Mark current proc as umounted
+    susfs_set_current_proc_umounted();
     susfs_do_umount();
     return 0;
 }
@@ -70,21 +92,6 @@ do_umount:
 /* 符号导出，解决 undefined symbol */
 EXPORT_SYMBOL_GPL(ksu_handle_setresuid);
 
-
-do_umount:
-    {
-        // Handle kernel umount
-        ksu_handle_umount(current_uid().val, ruid);
-
-        // Handle extra susfs work
-        ksu_handle_extra_susfs_work();
-    }
-
-    // Mark current proc as umounted
-    susfs_set_current_proc_umounted();
-
-    return 0;
-}
 #else
 static int ksu_task_fix_setuid(struct cred *new, const struct cred *old, int flags)
 {
@@ -115,7 +122,7 @@ static int ksu_task_fix_setuid(struct cred *new, const struct cred *old, int fla
 #endif
 
 static struct security_hook_list ksu_hooks[] = {
-#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 10, 0) || defined(CONFIG_IS_HW_HISI) ||                                     \
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 10, 0) || defined(CONFIG_IS_HW_HISI) || \
     defined(CONFIG_KSU_ALLOWLIST_WORKAROUND)
     LSM_HOOK_INIT(key_permission, ksu_key_permission),
 #endif
@@ -134,8 +141,3 @@ void __init ksu_lsm_hook_init(void)
 #endif
     pr_info("LSM hooks initialized.\n");
 }
-//void ksu_init_rc_hook(void)
-//{
-    // 空实现，新版不需要这个
-//}
-//EXPORT_SYMBOL_GPL(ksu_init_rc_hook);
