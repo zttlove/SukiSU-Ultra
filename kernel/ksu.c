@@ -83,7 +83,7 @@
 #include "sulog/event.c"
 #include "sulog/fd.c"
 
-#include "hook/lsm_hook.c"
+
 
 #include "selinux/selinux.c"
 #include "selinux/sepolicy.c"
