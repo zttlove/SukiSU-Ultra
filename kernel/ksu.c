@@ -93,8 +93,8 @@
 
 struct cred *ksu_cred;
 
-int allow_shell = IS_ENABLED(CONFIG_KSU_DEBUG);
-module_param(allow_shell, int, 0);
+bool allow_shell = IS_ENABLED(CONFIG_KSU_DEBUG);
+module_param_named(allow_shell, allow_shell, bool, 0);
 
 int __init kernelsu_init(void)
 {
