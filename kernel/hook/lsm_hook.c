@@ -11,8 +11,16 @@
 #include <linux/key.h>
 #include <linux/workqueue.h>
 #include <linux/string.h>
+
+// 关键：先包含 allowlist.h，再包含 lsm_hook.h
+#include "../policy/allowlist.h"
+
+// 兜底定义宏，防止展开失败
+#ifndef ksu_is_allow_uid_for_current
+#define ksu_is_allow_uid_for_current(uid) unlikely(__ksu_is_allow_uid_for_current(uid))
+#endif
+
 #include "lsm_hook.h"
-#include "policy/allowlist.h"
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4, 10, 0) || defined(CONFIG_IS_HW_HISI) || \
     defined(CONFIG_KSU_ALLOWLIST_WORKAROUND)
