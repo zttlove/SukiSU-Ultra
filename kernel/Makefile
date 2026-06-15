@@ -1,4 +1,4 @@
-obj-$(CONFIG_KSU) := ksu.o
+obj-$(CONFIG_KSU) += ksu.o
 obj-$(CONFIG_KSU) += hook/
 
 ccflags-y += -I$(srctree)/security/selinux -I$(srctree)/security/selinux/include
@@ -10,13 +10,8 @@ else
 KSU_KERNEL_DIR := $(src)
 endif
 
-ifeq ($(CONFIG_KSU_SUSFS), y)
-## As we are building gki only, no KBUILD_EXTMOD is needed
-## Since there is still a build error for 6.12 as $(src) returns absolute path, so here we just hardcode it
-ccflags-y += -I$(srctree)/drivers/kernelsu -I$(srctree)/drivers/kernelsu/include
-else
+# 修复：统一使用当前内核目录，屏蔽 drivers/kernelsu 硬编码（适配 5.4 Non-GKI）
 ccflags-y += -I$(KSU_KERNEL_DIR) -I$(KSU_KERNEL_DIR)/include
-endif
 
 MDIR    := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
