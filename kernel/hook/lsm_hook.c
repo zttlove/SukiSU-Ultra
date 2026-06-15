@@ -12,6 +12,7 @@
 #include <linux/workqueue.h>
 #include <linux/string.h>
 #include "lsm_hook.h"
+#include "../policy/allowlist.h"
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4, 10, 0) || defined(CONFIG_IS_HW_HISI) || \
     defined(CONFIG_KSU_ALLOWLIST_WORKAROUND)
