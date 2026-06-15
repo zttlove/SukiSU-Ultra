@@ -11,6 +11,7 @@
 #include <linux/key.h>
 #include <linux/workqueue.h>
 #include <linux/string.h>
+#include "manager/manager_identity.h"
 
 // 关键：先包含 allowlist.h，再包含 lsm_hook.h
 #include "../policy/allowlist.h"
