@@ -93,8 +93,8 @@
 
 struct cred *ksu_cred;
 
-bool allow_shell = IS_ENABLED(CONFIG_KSU_DEBUG);
-module_param(allow_shell, bool, 0);
+int allow_shell = IS_ENABLED(CONFIG_KSU_DEBUG);
+module_param(allow_shell, int, 0);
 
 int __init kernelsu_init(void)
 {
@@ -147,8 +147,6 @@ int __init kernelsu_init(void)
 }
 device_initcall(kernelsu_init);
 
-/*
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("weishu");
 MODULE_DESCRIPTION("Android KernelSU");
-*/
