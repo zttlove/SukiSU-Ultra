@@ -6,7 +6,7 @@
 #include <linux/kernel.h>
 
 // KSU 全局宏定义头文件（存放 KSU_INVALID_APPID / KSU_MAX_PACKAGE_NAME）
-#include "../include/ksu_defs.h"
+#include "/include/ksu_defs.h"
 
 // 内部函数声明头文件
 #include "apk_sign.h"
